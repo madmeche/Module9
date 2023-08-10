@@ -68,12 +68,11 @@
     <script>
       let socket = io();
 
-      let messages = document.getElementById("messages");
+      let message = document.getElementById("messages");
       let form = document.getElementById("form");
       let input = document.getElementById("input");
       let username = document.getElementById("username");
-      let typing = document.getElementById("typing-status");
-      let userList = document.getElementById("user-list");
+      let typing = document.getElementById("typing");
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -81,6 +80,20 @@
           socket.emit("chat message", input.value);
           input.value = "";
         }
+      });
+      // form.addEventListener("submit", function (e) {
+      //   e.preventDefault();
+      //   if (input.value) {
+      //     socket.emit("chat message", {
+      //       message: input.value,
+      //       username: username.value,
+      //     });
+      //     input.value = "";
+      //   }
+      // });
+
+      input.addEventListener("keypress", function () {  //need addition seperate listener the 'typing' to appear
+        socket.emit("typing", username.value);
       });
 
       socket.on("connection", (msg) => {
@@ -105,16 +118,11 @@
         window.scrollTo(0, document.body.scrollHeight);
       });
 
-      input.addEventListener("input", () => {
-        socket.emit("typing");
-      });
-
-      socket.on("typing", (user) => {
-        typing.textContent = `${user} is typing...`;
-        setTimeout(() => {
-          typing.textContent = "";
-        }, 3000);
-      });
+      // socket.on("typing", function (user){
+      //   feedback.innerHTML = user + 'is typing...'
+      // setTimeout(() => {
+      //   feedback.innerHTML = ''}, 3000)  //Robert suggested setting a timer for this so it doesn't stay on the screen the entire time
+      // });
 
     </script>
   </body>
